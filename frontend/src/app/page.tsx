@@ -6,11 +6,12 @@ import { useState } from "react";
 export default function Home() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [participants, setParticipants] = useState([]);
+    // const [participants, setParticipants] = useState([]);
     const [date, setDate] = useState("");
     const [duration, setDuration] = useState("");
     const [sessionNotes, setSessionNotes] = useState("");
     const [isSignedIn, setIsSignedIn] = useState(false);
+    const [refreshToken, setRefreshToken] = useState("");
 
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
@@ -21,7 +22,9 @@ export default function Home() {
                     { code }
                 );
                 console.log("res = ", response.data);
+                // console.log("ref_token = ", response.data.refresh_token);
                 setIsSignedIn(true);
+                setRefreshToken(response.data.refresh_token);
             } catch (error) {
                 console.log("Error:", error);
             }
@@ -38,15 +41,15 @@ export default function Home() {
                 {
                     title,
                     description,
-                    participants,
                     date,
                     duration,
                     sessionNotes,
+                    refreshToken,
                 }
             );
             console.log("resSubmit = ", response.data);
-        } catch (error) {
-            console.log("Error:", error);
+        } catch (error: any) {
+            console.log("Error:", error.response.data);
         }
     };
 
@@ -75,8 +78,8 @@ export default function Home() {
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                             <br />
-                            <label htmlFor="participants">Participants</label>
-                            <br />
+                            {/* <label htmlFor="participants">Participants</label>
+                            <br /> */}
                             {/* <input
                                     type="text"
                                     id="participants"

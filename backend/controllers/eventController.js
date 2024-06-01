@@ -1,7 +1,9 @@
 const Event = require("../models/Event");
+const { google } = require("googleapis");
+const { oauth2Client } = require("./authController");
 
 // Get all events for a user
-exports.getEvents = async (req, res) => {
+const getEvents = async (req, res) => {
     try {
         const events = await Event.find({ userId: req.params.userId });
         res.status(200).json(events);
@@ -11,38 +13,62 @@ exports.getEvents = async (req, res) => {
 };
 
 // Create a new event
-exports.createEvent = async (req, res) => {
+const createEvent = async (req, res, next) => {
     const {
         title,
         description,
-        participants,
         date,
         time,
         duration,
         sessionNotes,
         userId,
+        refreshToken,
     } = req.body;
+
+    const event = {
+        summary: title,
+        // location: "123 Main St, Anytown, USA",
+        description: description,
+        // sessionNotes: sessionNotes,
+        extendedProperties: {
+            private: {
+                sessionNotes: sessionNotes,
+            },
+        },
+        start: {
+            dateTime: "2024-09-05T09:00:00-09:00",
+            timeZone: "America/Los_Angeles",
+        },
+        end: {
+            dateTime: "2024-09-05T12:00:00-10:00",
+            timeZone: "America/Los_Angeles",
+        },
+    };
+
     try {
-        const newEvent = new Event({
-            title,
-            description,
-            participants,
-            date,
-            time,
-            duration,
-            sessionNotes,
-            userId,
+        oauth2Client.credentials = {
+            refresh_token: refreshToken,
+        };
+
+        const calendar = google.calendar("v3");
+        const response = await calendar.events.insert({
+            auth: oauth2Client,
+            calendarId: "primary",
+            resource: event,
         });
 
-        await newEvent.save();
-        res.status(201).json(newEvent);
+        res.status(201).json({
+            message: "Event created successfully",
+            link: response.data.htmlLink,
+        });
     } catch (error) {
+        console.log("Error creating event:", error);
         res.status(500).json({ message: error.message });
     }
 };
 
 // Update an existing event
-exports.updateEvent = async (req, res) => {
+const updateEvent = async (req, res) => {
     const { id } = req.params;
     const {
         title,
@@ -74,7 +100,7 @@ exports.updateEvent = async (req, res) => {
 };
 
 // Delete an event
-exports.deleteEvent = async (req, res) => {
+const deleteEvent = async (req, res) => {
     const { id } = req.params;
     try {
         await Event.findByIdAndDelete(id);
@@ -83,3 +109,5 @@ exports.deleteEvent = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+module.exports = { getEvents, createEvent, updateEvent, deleteEvent };
