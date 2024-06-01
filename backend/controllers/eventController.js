@@ -33,6 +33,7 @@ exports.createEvent = async (req, res) => {
             sessionNotes,
             userId,
         });
+
         await newEvent.save();
         res.status(201).json(newEvent);
     } catch (error) {
