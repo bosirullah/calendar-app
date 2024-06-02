@@ -7,6 +7,7 @@ const eventRoutes = require("./routes/eventRoutes");
 const authRoutes = require("./routes/auth");
 // const userRoutes = require("./routes/userRoutes");
 const connectDB = require("./config/db");
+const router = require("./routes/auth");
 
 dotenv.config();
 

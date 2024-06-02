@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-    getEvents,
-    createEvent,
-    updateEvent,
-    deleteEvent,
+  getEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
 } = require("../controllers/eventController");
 
 router.get("/:userId", getEvents);
