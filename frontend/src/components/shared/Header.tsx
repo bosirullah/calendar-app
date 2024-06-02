@@ -19,7 +19,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import SignInButton from "../buttons/SignInButton";
 
-const pages = ["Events"];
+const pages = ["Create"];
 const settings = ["Logout"];
 
 function Header() {
@@ -155,7 +155,7 @@ function Header() {
             {user && (
               <>
                 {pages.map((page) => (
-                  <Link href="/events">
+                  <Link href="/">
                     <Button
                       key={page}
                       onClick={handleCloseNavMenu}
