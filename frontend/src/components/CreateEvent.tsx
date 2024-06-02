@@ -19,6 +19,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { format } from "date-fns";
 import { TimePicker } from "@mui/x-date-pickers";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -38,15 +39,6 @@ interface FormData {
   duration: Number;
   sessionNotes: string;
 }
-interface FormErrors {
-  eventTitle?: string;
-  description?: string;
-  participants?: string;
-  date?: string;
-  time?: string;
-  duration?: string;
-  sessionNotes?: string;
-}
 
 const CreateEvent = () => {
   const [open, setOpen] = useState(false);
@@ -56,6 +48,8 @@ const CreateEvent = () => {
   const handleCloseDialog = () => {
     setOpen(false);
   };
+
+  const router = useRouter();
   const [eventData, setEventData] = useState<FormData>({
     eventTitle: "",
     description: "",
@@ -80,56 +74,35 @@ const CreateEvent = () => {
     setEventData((prevData) => ({ ...prevData, time }));
   };
 
-  //  Validation
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  const validate = (): boolean => {
-    const newErrors: FormErrors = {};
-    if (!eventData.eventTitle) newErrors.eventTitle = "Event title is required";
-    if (!eventData.description)
-      newErrors.description = "Description is required";
-    if (!eventData.participants)
-      newErrors.participants = "Participants are required";
-    if (!eventData.date) newErrors.date = "Date is required";
-    if (!eventData.time) newErrors.time = "Time is required";
-    if (!eventData.duration) newErrors.duration = "Duration is required";
-    if (!eventData.sessionNotes)
-      newErrors.sessionNotes = "Session notes are required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleEventCreate = async () => {
-    if (validate()) {
-      const formattedDate = eventData.date
-        ? format(eventData.date.toDate(), "yyyy-MM-dd")
-        : "";
-      const formattedTime = eventData.time
-        ? format(eventData.time.toDate(), "HH:mm")
-        : "";
+    const formattedDate = eventData.date
+      ? format(eventData.date.toDate(), "yyyy-MM-dd")
+      : "";
+    const formattedTime = eventData.time
+      ? format(eventData.time.toDate(), "HH:mm")
+      : "";
 
-      const eventDataFromUser = {
-        ...eventData,
-        date: formattedDate,
-        time: formattedTime,
-      };
+    const eventDataFromUser = {
+      ...eventData,
+      date: formattedDate,
+      time: formattedTime,
+    };
 
-      // POST Api Call
+    // POST Api Call
 
-      console.log(eventDataFromUser, eventDataFromUser);
-      setEventData({
-        eventTitle: "",
-        description: "",
-        participants: 2,
-        date: null,
-        time: null,
-        duration: 1,
-        sessionNotes: "",
-      });
-      handleCloseDialog();
-
-      toast.success("Event created successfully!");
-    }
+    console.log(eventDataFromUser, eventDataFromUser);
+    setEventData({
+      eventTitle: "",
+      description: "",
+      participants: 2,
+      date: null,
+      time: null,
+      duration: 1,
+      sessionNotes: "",
+    });
+    toast.success("Event created successfully!");
+    handleCloseDialog();
+    router.push("/events");
   };
   return (
     <>
@@ -160,8 +133,6 @@ const CreateEvent = () => {
                   autoComplete="off"
                   value={eventData.eventTitle}
                   onChange={(event: any) => handleEventFormDataChange(event)}
-                  error={!!errors.eventTitle}
-                  helperText={errors.eventTitle}
                   fullWidth
                   sx={{
                     border: "1px solid #ccc",
@@ -185,8 +156,6 @@ const CreateEvent = () => {
                   autoComplete="off"
                   value={eventData.description}
                   onChange={(event: any) => handleEventFormDataChange(event)}
-                  error={!!errors.description}
-                  helperText={errors.description}
                   fullWidth
                   sx={{
                     border: "1px solid #ccc",
@@ -209,8 +178,6 @@ const CreateEvent = () => {
                   autoComplete="off"
                   value={eventData.participants}
                   onChange={(event: any) => handleEventFormDataChange(event)}
-                  error={!!errors.participants}
-                  helperText={errors.participants}
                   fullWidth
                   sx={{
                     border: "1px solid #ccc",
@@ -264,8 +231,6 @@ const CreateEvent = () => {
                     autoComplete="off"
                     value={eventData.duration}
                     onChange={(event: any) => handleEventFormDataChange(event)}
-                    error={!!errors.duration}
-                    helperText={errors.duration}
                     fullWidth
                     sx={{
                       border: "1px solid #ccc",
@@ -291,8 +256,6 @@ const CreateEvent = () => {
                   autoComplete="off"
                   value={eventData.sessionNotes}
                   onChange={(event: any) => handleEventFormDataChange(event)}
-                  error={!!errors.sessionNotes}
-                  helperText={errors.sessionNotes}
                   fullWidth
                   sx={{
                     border: "1px solid #ccc",
