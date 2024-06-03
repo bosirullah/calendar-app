@@ -1,14 +1,17 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { useAuth } from "@/context/AuthContext";
 
 const EventListing = () => {
-  return (
-    <>
-      <Box>
+    // const { user } = useAuth();
+
+    return (
+        <>
+            {/* <Box>
         <Typography>Your Events</Typography>
-      </Box>
-    </>
-  );
+      </Box> */}
+        </>
+    );
 };
 
 export default EventListing;

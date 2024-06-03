@@ -3,49 +3,65 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 interface User {
-  name: string;
-  email: string;
-  picture: string;
+    name: string;
+    email: string;
+    picture: string;
 }
 
 interface AuthContextType {
-  user: User | null;
-  login: (userInfo: User) => void;
-  logout: () => void;
+    user: User | null;
+    login: (userInfo: User) => void;
+    logout: () => void;
+    refreshToken: String;
+    setRefreshToken: (refreshToken: String) => void;
+    isAuthenticated: boolean;
+    setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+    undefined
 );
 
 interface AuthProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [refreshToken, setRefreshToken] = useState<any>("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = (userInfo: User) => {
-    setUser(userInfo);
-  };
+    const login = (userInfo: User) => {
+        setUser(userInfo);
+    };
 
-  const logout = () => {
-    setUser(null);
-  };
+    const logout = () => {
+        setUser(null);
+    };
 
-  return (
-    <GoogleOAuthProvider clientId="98683621565-ktsjs4g7n2grbkh35888dbs5443h9t2b.apps.googleusercontent.com">
-      <AuthContext.Provider value={{ user, login, logout }}>
-        {children}
-      </AuthContext.Provider>
-    </GoogleOAuthProvider>
-  );
+    return (
+        <GoogleOAuthProvider clientId="98683621565-ktsjs4g7n2grbkh35888dbs5443h9t2b.apps.googleusercontent.com">
+            <AuthContext.Provider
+                value={{
+                    user,
+                    login,
+                    logout,
+                    refreshToken,
+                    setRefreshToken,
+                    isAuthenticated,
+                    setIsAuthenticated,
+                }}
+            >
+                {children}
+            </AuthContext.Provider>
+        </GoogleOAuthProvider>
+    );
 };
 
 export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
 };
