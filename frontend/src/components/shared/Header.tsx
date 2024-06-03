@@ -47,8 +47,8 @@ function Header() {
         user,
         login,
         logout,
-        refreshToken,
         setRefreshToken,
+        setAccessToken,
         isAuthenticated,
         setIsAuthenticated,
     } = useAuth();
@@ -82,6 +82,7 @@ function Header() {
                 );
 
                 const { access_token, refresh_token } = tokenRes.data;
+                setAccessToken(access_token);
                 setRefreshToken(refresh_token);
                 setIsAuthenticated(true);
 
@@ -95,6 +96,7 @@ function Header() {
             }
         },
         flow: "auth-code",
+        scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
     });
 
     // Logout

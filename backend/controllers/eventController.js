@@ -10,7 +10,7 @@ exports.getHomePage = async (req, res) => {
 // const getEvents = async (req, res) => {
 //     try {
 //         const events = await Event.find({ userId: req.params.userId });
-//         res.status(200).json(events);
+//         res.status(200).jsx`on(events);
 //     } catch (error) {
 //         res.status(500).json({ message: error.message });
 //     }
@@ -71,11 +71,11 @@ const createEvent = async (req, res, next) => {
             },
         },
         start: {
-            dateTime: "2024-07-05T09:00:00-11:00",
+            dateTime: "2024-10-18T09:00:00-09:00",
             timeZone: "America/Los_Angeles",
         },
         end: {
-            dateTime: "2024-07-05T12:00:00-13:00",
+            dateTime: "2024-10-18T12:00:00-12:00",
             timeZone: "America/Los_Angeles",
         },
     };

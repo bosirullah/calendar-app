@@ -14,6 +14,8 @@ interface AuthContextType {
     logout: () => void;
     refreshToken: String;
     setRefreshToken: (refreshToken: String) => void;
+    accessToken: String;
+    setAccessToken: (accessToken: String) => void;
     isAuthenticated: boolean;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
@@ -29,6 +31,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [refreshToken, setRefreshToken] = useState<any>("");
+    const [accessToken, setAccessToken] = useState<any>("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const login = (userInfo: User) => {
@@ -48,6 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     logout,
                     refreshToken,
                     setRefreshToken,
+                    accessToken,
+                    setAccessToken,
                     isAuthenticated,
                     setIsAuthenticated,
                 }}

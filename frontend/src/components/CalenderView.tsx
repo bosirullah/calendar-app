@@ -9,31 +9,27 @@ import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
-// const CLIENT_ID = process.env.CLIENT_ID;
-// const SCOPES = process.env.SCOPES;
-// const REDIRECT_URI = process.env.BASE_URL;
-
 const CalenderView = () => {
     const [events, setEvents] = useState<any>([]);
-    const { isAuthenticated, setIsAuthenticated } = useAuth();
+    const { accessToken, isAuthenticated, setIsAuthenticated } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const refreshToken = localStorage.getItem("refresh_token");
-                if (refreshToken) {
-                    const tokenRes = await axios.get(
-                        "http://localhost:5000/events/getEvents"
-                    );
+                if (isAuthenticated) {
+                    // const tokenRes = await axios.get(
+                    //     "http://localhost:5000/events/getEvents"
+                    // );
 
-                    const { access_token } = tokenRes.data;
+                    // const { access_token } = tokenRes.data;
+                    // console.log("tokenRes = ", tokenRes);
 
                     const response = await axios.get(
                         "http://localhost:5000/events/getEvents",
                         {
                             headers: {
-                                Authorization: `Bearer ${access_token}`,
+                                Authorization: `Bearer ${accessToken}`,
                             },
                         }
                     );
@@ -44,10 +40,6 @@ const CalenderView = () => {
                 console.error("Error fetching events:", error);
             }
         };
-
-        // Redirect the user to Google's OAuth 2.0 server
-        // const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPES}&access_type=offline`;
-        // window.location.href = authUrl;
 
         // Fetch events after authentication
         if (isAuthenticated) {
