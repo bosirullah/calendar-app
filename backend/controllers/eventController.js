@@ -16,21 +16,52 @@ exports.getHomePage = async (req, res) => {
 //     }
 // };
 
+const events = async (req, res) => {
+    // res.send("/");
+};
+
+// This function will be used to fetch events from the Google Calendar API
+const getEvents = async (req, res) => {
+    try {
+        const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+        const response = await calendar.events.list({
+            calendarId: "primary",
+            timeMin: new Date().toISOString(),
+            showDeleted: false,
+            singleEvents: true,
+            maxResults: 10,
+            orderBy: "startTime",
+        });
+        const events = response.data.items.map((event) => ({
+            id: event.id,
+            title: event.summary,
+            start: event.start.dateTime || event.start.date,
+            end: event.end.dateTime || event.end.date,
+        }));
+        res.status(200).json(events);
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).json({ error: "Failed to fetch events" });
+    }
+};
+
 // Create a new event
 const createEvent = async (req, res, next) => {
     const {
-        title,
+        eventTitle,
         description,
+        participants,
         date,
         time,
         duration,
         sessionNotes,
-        userId,
         refreshToken,
     } = req.body;
 
+    // console.log("ref-token = ", refreshToken);
+
     const event = {
-        summary: title,
+        summary: eventTitle,
         // location: "123 Main St, Anytown, USA",
         description: description,
         // sessionNotes: sessionNotes,
@@ -40,11 +71,11 @@ const createEvent = async (req, res, next) => {
             },
         },
         start: {
-            dateTime: "2024-09-05T09:00:00-09:00",
+            dateTime: "2024-07-05T09:00:00-11:00",
             timeZone: "America/Los_Angeles",
         },
         end: {
-            dateTime: "2024-09-05T12:00:00-10:00",
+            dateTime: "2024-07-05T12:00:00-13:00",
             timeZone: "America/Los_Angeles",
         },
     };
@@ -55,7 +86,7 @@ const createEvent = async (req, res, next) => {
         };
 
         const calendar = google.calendar("v3");
-        const response = await calendar.events.insert({
+        const response = calendar.events.insert({
             auth: oauth2Client,
             calendarId: "primary",
             resource: event,
@@ -63,7 +94,7 @@ const createEvent = async (req, res, next) => {
 
         res.status(201).json({
             message: "Event created successfully",
-            link: response.data.htmlLink,
+            // link: response.data.htmlLink,
         });
     } catch (error) {
         console.log("Error creating event:", error);
@@ -136,4 +167,4 @@ const createEvent = async (req, res, next) => {
 //   }
 // };
 
-module.exports = { createEvent };
+module.exports = { events, createEvent, getEvents };
