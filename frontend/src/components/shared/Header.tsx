@@ -210,9 +210,8 @@ function Header() {
                         {user && (
                             <>
                                 {pages.map((page) => (
-                                    <Link href="/">
+                                    <Link href="/" key={page}>
                                         <Button
-                                            key={page}
                                             onClick={handleCloseNavMenu}
                                             sx={{
                                                 my: 2,

@@ -18,13 +18,6 @@ const CalenderView = () => {
         const fetchEvents = async () => {
             try {
                 if (isAuthenticated) {
-                    // const tokenRes = await axios.get(
-                    //     "http://localhost:5000/events/getEvents"
-                    // );
-
-                    // const { access_token } = tokenRes.data;
-                    // console.log("tokenRes = ", tokenRes);
-
                     const response = await axios.get(
                         "http://localhost:5000/events/getEvents",
                         {
